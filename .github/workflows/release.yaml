@@ -13,10 +13,11 @@ jobs:
               run: npm ci
             - name: Build
               run: npm run build
+            - name: Rename
+              run: mv dist/mushroom.js dist/mushroom-thermostat.js
             - name: Release
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/')
               with:
                   draft: true
-                  generate_release_notes: true
                   files: dist/*.js

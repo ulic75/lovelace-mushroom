@@ -1,0 +1,25 @@
+{
+    "editor": {
+        "card": {
+            "generic": {
+                "hide_name": "Hide name?",
+                "hide_state": "Hide state?",
+                "hide_icon": "Hide icon?",
+                "icon_color": "Icon color",
+                "layout": "Layout",
+                "primary_info": "Primary information",
+                "secondary_info": "Secondary information",
+                "content_info": "Content",
+                "use_entity_picture": "Use entity picture?"
+            },
+            "thermostat": {
+                "use_action_color": "Icon action color?",
+                "use_action_icon": "Icon action?",
+                "show_mode_control": "Mode control?",
+                "show_temp_control": "Temperature control?",
+                "show_temp_indicators": "Temperature control indicators?",
+                "temperature_gap": "Energy Efficient Gap"
+            }
+        }
+    }
+}

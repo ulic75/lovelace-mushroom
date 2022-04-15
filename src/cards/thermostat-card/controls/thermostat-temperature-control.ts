@@ -124,6 +124,9 @@ export class ThermostatTemperatureControl extends LitElement {
                 flex-direction: row;
                 justify-content: flex-end;
             }
+            :host([rtl]) .container {
+                flex-direction: row-reverse;
+            }
             .container ss-dual-slider {
                 flex: 1;
                 --main-color: var(--heating-color);

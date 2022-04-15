@@ -1,4 +1,4 @@
-import { HomeAssistant } from "custom-card-helpers";
+import { computeRTL, HomeAssistant } from "custom-card-helpers";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
@@ -40,7 +40,9 @@ export class ThermostatModeControl extends LitElement {
     protected render(): TemplateResult {
         const { hvac_modes } = this.entity.attributes;
 
-        return html`<mushroom-button-group .fill=${this.fill}>
+        const rtl = computeRTL(this.hass);
+
+        return html`<mushroom-button-group .fill=${this.fill} ?rtl=${rtl}>
             ${(hvac_modes || [])
                 .sort(compareClimateHvacModes)
                 .map((mode) => this._renderModeIcon(mode))}

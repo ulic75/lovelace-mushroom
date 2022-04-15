@@ -1,5 +1,6 @@
 import {
     ActionHandlerEvent,
+    computeRTL,
     handleAction,
     hasAction,
     HomeAssistant,
@@ -172,9 +173,12 @@ export class ThermostatCard extends LitElement implements LovelaceCard {
             iconStyle["--shape-color"] = `rgba(var(--rgb-action-climate-${hvac_action}), 0.25)`;
         }
 
+        const rtl = computeRTL(this.hass);
+
         return html`
-            <mushroom-card .layout=${layout}>
+            <mushroom-card .layout=${layout} ?rtl=${rtl}>
                 <mushroom-state-item
+                    ?rtl=${rtl}
                     .layout=${layout}
                     @action=${this._handleAction}
                     .actionHandler=${actionHandler({
@@ -205,7 +209,7 @@ export class ThermostatCard extends LitElement implements LovelaceCard {
                 </mushroom-state-item>
                 ${this._controls.length > 0
                     ? html`
-                          <div class="actions">
+                          <div class="actions" ?rtl=${rtl}>
                               ${this.renderActiveControl(entity)} ${this.renderOtherControls()}
                           </div>
                       `
@@ -231,6 +235,7 @@ export class ThermostatCard extends LitElement implements LovelaceCard {
 
     private renderActiveControl(entity: ClimateEntity): TemplateResult | null {
         const layout = getLayoutFromConfig(this._config!);
+        const rtl = computeRTL(this.hass);
 
         switch (this._activeControl) {
             case "mode_control":
@@ -241,6 +246,7 @@ export class ThermostatCard extends LitElement implements LovelaceCard {
                 ></ss-thermostat-mode-control>`;
             case "temperature_control":
                 return html`<ss-thermostat-temperature-control
+                    ?rtl=${rtl}
                     .hass=${this.hass}
                     .entity=${entity}
                     .gap=${this._config?.temperature_gap ?? 0}

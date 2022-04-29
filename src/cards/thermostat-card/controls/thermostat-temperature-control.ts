@@ -74,11 +74,11 @@ export class ThermostatTemperatureControl extends LitElement {
 
         const step = getStepSize(this.hass, this.entity);
 
-        const low = formatDegrees(this.hass, this._indicatorTemps[0], step);
-        const high = formatDegrees(this.hass, this._indicatorTemps[1], step);
+        const low = this._indicatorTemps[0];
+        const high = this._indicatorTemps[1];
 
         return html`<div class="container">
-            ${this.showIndicators && low ? this.renderIndicator(low, "heating") : null}
+            ${this.showIndicators && low ? this.renderIndicator(low, step, "heating") : null}
             <ss-dual-slider
                 styles="--bg-color: rgba(var(--rgb-primary-text-color), 0.05);"
                 .showActive=${true}
@@ -92,17 +92,19 @@ export class ThermostatTemperatureControl extends LitElement {
                 @change=${this.onChange}
                 @current-change=${this.onCurrentChange}
             ></ss-dual-slider>
-            ${this.showIndicators && high ? this.renderIndicator(high, "cooling") : null}
+            ${this.showIndicators && high ? this.renderIndicator(high, step, "cooling") : null}
         </div>`;
     }
 
-    renderIndicator = (value: number, action: "cooling" | "heating") => html`<mushroom-state-value
-        .value=${value.toString()}
-        style=${styleMap({
-            "--text-color": `rgb(var(--rgb-action-climate-${action}))`,
-            "--bg-color": `rgba(var(--rgb-action-climate-${action}), 0.05)`,
-        })}
-    ></mushroom-state-value>`;
+    renderIndicator = (value: number, step: number, action: "cooling" | "heating") => {
+        return html`<mushroom-state-value
+            .value=${formatDegrees(this.hass, value, step)}
+            style=${styleMap({
+                "--text-color": `rgb(var(--rgb-action-climate-${action}))`,
+                "--bg-color": `rgba(var(--rgb-action-climate-${action}), 0.05)`,
+            })}
+        ></mushroom-state-value>`;
+    };
 
     static get styles(): CSSResultGroup {
         return css`

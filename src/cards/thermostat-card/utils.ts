@@ -8,7 +8,7 @@ export const formatDegrees = (hass: HomeAssistant, value: number | undefined, st
         step === 1
             ? { maximumFractionDigits: 0 }
             : { maximumFractionDigits: 1, minimumFractionDigits: 1 };
-    return +formatNumber(value!, hass.locale, options);
+    return formatNumber(value!, hass.locale, options);
 };
 
 export const getStepSize = (hass: HomeAssistant, entity: ClimateEntity): number => {

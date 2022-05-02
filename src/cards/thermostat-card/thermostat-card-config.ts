@@ -9,6 +9,7 @@ export interface ThermostatCardConfig extends LovelaceCardConfig {
     icon?: string;
     name?: string;
     layout?: Layout;
+    fill_container?: boolean;
     hide_state?: boolean;
     use_action_color?: boolean;
     use_action_icon?: boolean;
@@ -28,6 +29,7 @@ export const thermostatCardConfigStruct = assign(
         icon: optional(string()),
         name: optional(string()),
         layout: optional(layoutStruct),
+        fill_container: optional(boolean()),
         hide_state: optional(boolean()),
         use_action_color: optional(boolean()),
         use_action_icon: optional(boolean()),

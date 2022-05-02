@@ -8,8 +8,8 @@ import {
     LovelaceCardEditor,
     UNIT_F,
 } from "custom-card-helpers";
-import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, CSSResultGroup, html, PropertyValues, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 // import "../../shared/card";
 // import "../../shared/state-item";
@@ -31,6 +31,7 @@ import { formatDegrees, getStepSize } from "./utils";
 import { climateIconAction } from "../../utils/icons/climate-icon";
 import { isActive } from "../../ha/data/entity";
 import { ClimateEntity, CLIMATE_PRESET_NONE } from "../../ha/data/climate";
+import { MushroomBaseElement } from "../../utils/base-element";
 
 type ThermostatCardControl = "temperature_control" | "mode_control";
 
@@ -46,7 +47,7 @@ registerCustomCard({
 });
 
 @customElement(THERMOSTAT_CARD_NAME)
-export class ThermostatCard extends LitElement implements LovelaceCard {
+export class ThermostatCard extends MushroomBaseElement implements LovelaceCard {
     public static async getConfigElement(): Promise<LovelaceCardEditor> {
         await import("./thermostat-card-editor");
         return document.createElement(THERMOSTAT_CARD_EDITOR_NAME) as LovelaceCardEditor;
@@ -61,8 +62,6 @@ export class ThermostatCard extends LitElement implements LovelaceCard {
             temperature_gap: hass.config.unit_system.temperature === UNIT_F ? 2 : 1,
         };
     }
-
-    @property({ attribute: false }) public hass!: HomeAssistant;
 
     @state() private _config?: ThermostatCardConfig;
 
@@ -259,6 +258,7 @@ export class ThermostatCard extends LitElement implements LovelaceCard {
 
     static get styles(): CSSResultGroup {
         return [
+            super.styles,
             cardStyle,
             css`
                 mushroom-state-item {

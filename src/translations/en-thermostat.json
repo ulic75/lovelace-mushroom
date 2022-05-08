@@ -14,6 +14,7 @@
                 "use_entity_picture": "Use entity picture?"
             },
             "thermostat": {
+                "enable_when_off": "Enable slider when off",
                 "use_action_color": "Icon action/state color?",
                 "use_action_icon": "Icon action/state?",
                 "show_mode_control": "Mode control?",

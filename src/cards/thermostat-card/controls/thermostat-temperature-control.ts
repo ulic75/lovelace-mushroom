@@ -18,6 +18,8 @@ export class ThermostatTemperatureControl extends LitElement {
 
     @property({ type: Number }) public gap!: number;
 
+    @property({ type: Boolean }) public enableWhenOff = false;
+
     @state() private _indicatorTemps: [number?, number?] = [undefined, undefined];
 
     onChange(e: CustomEvent<{ value?: number; secondary?: number }>): void {
@@ -82,7 +84,7 @@ export class ThermostatTemperatureControl extends LitElement {
             <ss-dual-slider
                 styles="--bg-color: rgba(var(--rgb-primary-text-color), 0.05);"
                 .showActive=${true}
-                .disabled=${!isActive(this.entity)}
+                .disabled=${this.enableWhenOff ? false : !isActive(this.entity)}
                 .value=${low}
                 .secondary=${high}
                 .min=${min_temp ?? 45}

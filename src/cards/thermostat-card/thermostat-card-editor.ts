@@ -13,6 +13,7 @@ import { THERMOSTAT_CARD_EDITOR_NAME, THERMOSTAT_ENTITY_DOMAINS } from "./const"
 import { ThermostatCardConfig, thermostatCardConfigStruct } from "./thermostat-card-config";
 
 export const THERMOSTAT_FIELDS = [
+    "enable_when_off",
     "use_action_icon",
     "use_action_color",
     "show_mode_control",
@@ -36,6 +37,7 @@ const computeSchema = memoizeOne((icon?: string, unit?: string): HaFormSchema[] 
             { name: "layout", selector: { "mush-layout": {} } },
             { name: "fill_container", selector: { boolean: {} } },
             { name: "hide_state", selector: { boolean: {} } },
+            { name: "enable_when_off", selector: { boolean: {} } },
         ],
     },
     {

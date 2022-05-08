@@ -14,8 +14,8 @@
                 "use_entity_picture": "Use entity picture?"
             },
             "thermostat": {
-                "use_action_color": "Icon action color?",
-                "use_action_icon": "Icon action?",
+                "use_action_color": "Icon action/state color?",
+                "use_action_icon": "Icon action/state?",
                 "show_mode_control": "Mode control?",
                 "show_temp_control": "Temperature control?",
                 "show_temp_indicators": "Temperature control indicators?",

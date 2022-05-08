@@ -147,7 +147,11 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
 
         const icon =
             this._config.icon ||
-            (!!this._config.use_action_icon && actionIcon ? actionIcon : stateIcon(entity));
+            (!!this._config.use_action_icon
+                ? hvac_action
+                    ? actionIcon
+                    : stateIcon(entity)
+                : "mdi:thermostat");
 
         const step = getStepSize(this.hass, entity);
 
@@ -171,6 +175,9 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
         if (this._config?.use_action_color && hvac_action && hvac_action !== "idle") {
             iconStyle["--icon-color"] = `rgb(var(--rgb-action-climate-${hvac_action}))`;
             iconStyle["--shape-color"] = `rgba(var(--rgb-action-climate-${hvac_action}), 0.25)`;
+        } else if (this._config?.use_action_color && entity.state !== "off") {
+            iconStyle["--icon-color"] = `rgb(var(--rgb-state-climate-${entity.state}))`;
+            iconStyle["--shape-color"] = `rgba(var(--rgb-state-climate-${entity.state}), 0.25)`;
         }
 
         const rtl = computeRTL(this.hass);

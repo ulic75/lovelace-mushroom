@@ -260,6 +260,7 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
                     .entity=${entity}
                     .gap=${this._config?.temperature_gap ?? 0}
                     .showIndicators=${!!this._config!.show_temp_indicators}
+                    .enableWhenOff=${this._config?.enable_when_off}
                 ></ss-thermostat-temperature-control>`;
             default:
                 return null;

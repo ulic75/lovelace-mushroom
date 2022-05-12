@@ -16,8 +16,15 @@ export const cardStyle = css`
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        justify-content: flex-end;
-        overflow-y: auto;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+    }
+    .actions::-webkit-scrollbar {
+        background: transparent; /* Chrome/Safari/Webkit */
+        height: 0px;
     }
     .actions *:not(:last-child) {
         margin-right: var(--spacing);

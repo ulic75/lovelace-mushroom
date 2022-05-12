@@ -14,8 +14,9 @@ export class StateValue extends LitElement {
             :host {
                 --text-color: var(--primary-text-color);
                 --bg-color: rgba(var(--rgb-primary-text-color), 0.05);
-                width: 42px;
-                height: 42px;
+                font-size: var(--control-height);
+                height: var(--control-height);
+                width: calc(var(--control-height) * var(--control-button-ratio));
                 flex: none;
             }
             .value {
@@ -23,7 +24,7 @@ export class StateValue extends LitElement {
                 align-items: center;
                 justify-content: center;
                 color: var(--text-color);
-                font-size: 16px;
+                font-size: 0.38em;
                 font-weight: bold;
                 height: 100%;
                 width: 100%;

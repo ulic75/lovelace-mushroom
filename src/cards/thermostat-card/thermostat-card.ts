@@ -172,12 +172,14 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
         }`;
 
         const iconStyle = {};
-        if (this._config?.use_action_color && hvac_action && hvac_action !== "idle") {
-            iconStyle["--icon-color"] = `rgb(var(--rgb-action-climate-${hvac_action}))`;
-            iconStyle["--shape-color"] = `rgba(var(--rgb-action-climate-${hvac_action}), 0.25)`;
-        } else if (this._config?.use_action_color && entity.state !== "off") {
-            iconStyle["--icon-color"] = `rgb(var(--rgb-state-climate-${entity.state}))`;
-            iconStyle["--shape-color"] = `rgba(var(--rgb-state-climate-${entity.state}), 0.25)`;
+        if (this._config?.use_action_color) {
+            if (hvac_action && !["idle", "off"].includes(hvac_action)) {
+                iconStyle["--icon-color"] = `rgb(var(--rgb-action-climate-${hvac_action}))`;
+                iconStyle["--shape-color"] = `rgba(var(--rgb-action-climate-${hvac_action}), 0.25)`;
+            } else if (!hvac_action && entity.state !== "off") {
+                iconStyle["--icon-color"] = `rgb(var(--rgb-state-climate-${entity.state}))`;
+                iconStyle["--shape-color"] = `rgba(var(--rgb-state-climate-${entity.state}), 0.25)`;
+            }
         }
 
         const rtl = computeRTL(this.hass);
@@ -276,8 +278,8 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
                     cursor: pointer;
                 }
                 mushroom-shape-icon {
-                    --icon-color: rgba(var(--rgb-state-climate-off), 0.5);
-                    --shape-color: rgba(var(--rgb-primary-text-color), 0.05);
+                    --icon-color: var(--icon-color-disabled);
+                    --shape-color: var(--shape-color-disabled);
                 }
             `,
         ];

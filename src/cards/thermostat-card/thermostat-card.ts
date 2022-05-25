@@ -157,19 +157,24 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
 
         const formattedCurrentTemp = formatDegrees(this.hass, currentTemp, step);
         const currentTempDisplay = `${formattedCurrentTemp} ${this.hass.config.unit_system.temperature}`;
-
-        const state = `${currentTempDisplay} | ${
-            hvac_action
-                ? this.hass!.localize(`state_attributes.climate.hvac_action.${hvac_action}`)
-                : this.hass!.localize(`component.climate.state._.${entity.state}`)
-        } ${
+        const localizedClimateState = this.hass!.localize(
+            `component.climate.state._.${entity.state}`
+        );
+        const localizedPresetMode =
             preset_mode && preset_mode !== CLIMATE_PRESET_NONE
-                ? `- ${
-                      this.hass!.localize(`state_attributes.climate.preset_mode.${preset_mode}`) ||
-                      preset_mode
-                  }`
-                : ""
-        }`;
+                ? this.hass!.localize(`state_attributes.climate.preset_mode.${preset_mode}`) ||
+                  preset_mode
+                : "";
+        const localizedHvacAction = hvac_action
+            ? this.hass!.localize(`state_attributes.climate.hvac_action.${hvac_action}`)
+            : null;
+
+        const state = `${currentTempDisplay} |${
+            localizedHvacAction ? ` ${localizedHvacAction} -` : ""
+        }${` ${localizedClimateState}`}${
+            Boolean(localizedPresetMode) ? ` - ${localizedPresetMode}` : ""
+        }
+        `;
 
         const iconStyle = {};
         if (this._config?.use_action_color) {

@@ -33,6 +33,7 @@ import { climateIconAction } from "../../utils/icons/climate-icon";
 import { isActive } from "../../ha/data/entity";
 import { ClimateEntity, CLIMATE_PRESET_NONE } from "../../ha/data/climate";
 import { MushroomBaseElement } from "../../utils/base-element";
+import { coerceBoolean } from "../../utils/boolean";
 
 type ThermostatCardControl = "temperature_control" | "mode_control";
 
@@ -143,15 +144,14 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
         const layout = getLayoutFromConfig(this._config);
         const hideState = !!this._config.hide_state;
 
-        const actionIcon = climateIconAction(hvac_action);
-
-        const icon =
-            this._config.icon ||
-            (!!this._config.use_action_icon
-                ? hvac_action
-                    ? actionIcon
-                    : stateIcon(entity)
-                : "mdi:thermostat");
+        let icon = this._config.icon || "mdi:thermostat";
+        if (coerceBoolean(this._config.use_action_icon)) {
+            if (hvac_action && hvac_action !== "idle") {
+                icon = climateIconAction(hvac_action);
+            } else {
+                icon = stateIcon(entity);
+            }
+        }
 
         const step = getStepSize(this.hass, entity);
 

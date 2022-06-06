@@ -1,8 +1,8 @@
-import { fireEvent, LovelaceCardEditor, UNIT_F } from "custom-card-helpers";
-import { CSSResultGroup, html, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import memoizeOne from "memoize-one";
 import { assert } from "superstruct";
+import { fireEvent, LovelaceCardEditor, UNIT_F } from "../../ha";
 import setupCustomlocalize from "../../localize";
 import { MushroomBaseElement } from "../../utils/base-element";
 import { GENERIC_LABELS } from "../../utils/form/generic-fields";

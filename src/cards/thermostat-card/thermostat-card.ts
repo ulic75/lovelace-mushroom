@@ -1,13 +1,3 @@
-import {
-    ActionHandlerEvent,
-    computeRTL,
-    handleAction,
-    hasAction,
-    HomeAssistant,
-    LovelaceCard,
-    LovelaceCardEditor,
-    UNIT_F,
-} from "custom-card-helpers";
 import { css, CSSResultGroup, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -17,7 +7,6 @@ import { styleMap } from "lit/directives/style-map.js";
 // import "../../shared/state-value";
 import { cardStyle } from "../../utils/card-styles";
 import { registerCustomCard } from "../../utils/custom-cards";
-import { actionHandler } from "../../utils/directives/action-handler-directive";
 import { stateIcon } from "../../utils/icons/state-icon";
 import { getLayoutFromConfig } from "../../utils/layout";
 import "./controls/thermostat-mode-control";
@@ -34,6 +23,17 @@ import { isActive } from "../../ha/data/entity";
 import { ClimateEntity, CLIMATE_PRESET_NONE } from "../../ha/data/climate";
 import { MushroomBaseElement } from "../../utils/base-element";
 import { coerceBoolean } from "../../utils/boolean";
+import {
+    actionHandler,
+    ActionHandlerEvent,
+    computeRTL,
+    handleAction,
+    hasAction,
+    HomeAssistant,
+    LovelaceCard,
+    LovelaceCardEditor,
+    UNIT_F,
+} from "../../ha";
 
 type ThermostatCardControl = "temperature_control" | "mode_control";
 

@@ -1,7 +1,7 @@
-import { HomeAssistant } from "custom-card-helpers";
 import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
+import { HomeAssistant } from "../../../ha";
 import { ClimateEntity } from "../../../ha/data/climate";
 import { isActive } from "../../../ha/data/entity";
 import "../../../shared/dual-slider";

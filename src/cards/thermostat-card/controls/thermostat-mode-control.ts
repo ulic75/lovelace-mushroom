@@ -1,7 +1,7 @@
-import { computeRTL, HomeAssistant } from "custom-card-helpers";
 import { css, CSSResultGroup, html, LitElement, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
+import { computeRTL, HomeAssistant } from "../../../ha";
 import { ClimateEntity, compareClimateHvacModes } from "../../../ha/data/climate";
 import { climateIcon } from "../../../utils/icons/climate-icon";
 // import "../../../shared/button";

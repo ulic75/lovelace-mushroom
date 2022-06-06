@@ -1,37 +1,27 @@
-import { ActionConfig, LovelaceCardConfig } from "custom-card-helpers";
-import { assign, boolean, number, object, optional, string } from "superstruct";
-import { actionConfigStruct } from "../../utils/action-struct";
-import { baseLovelaceCardConfig } from "../../utils/editor-styles";
-import { Layout, layoutStruct } from "../../utils/layout";
+import { assign, boolean, number, object, optional } from "superstruct";
+import { LovelaceCardConfig } from "../../ha";
+import { ActionsSharedConfig, actionsSharedConfigStruct } from "../../shared/config/actions-config";
+import { EntitySharedConfig, entitySharedConfigStruct } from "../../shared/config/entity-config";
+import { LayoutSharedConfig, layoutSharedConfigStruct } from "../../shared/config/layout-config";
+import { lovelaceCardConfigStruct } from "../../shared/config/lovelace-card-config";
 
-export interface ThermostatCardConfig extends LovelaceCardConfig {
-    entity?: string;
-    icon?: string;
-    name?: string;
-    layout?: Layout;
-    fill_container?: boolean;
-    hide_state?: boolean;
-    enable_when_off?: boolean;
-    use_action_color?: boolean;
-    use_action_icon?: boolean;
-    show_mode_control?: boolean;
-    show_temp_control?: boolean;
-    show_temp_indicators?: boolean;
-    temperature_gap?: number;
-    tap_action?: ActionConfig;
-    hold_action?: ActionConfig;
-    double_tap_action?: ActionConfig;
-}
+export type ThermostatCardConfig = LovelaceCardConfig &
+    EntitySharedConfig &
+    LayoutSharedConfig &
+    ActionsSharedConfig & {
+        enable_when_off?: boolean;
+        use_action_color?: boolean;
+        use_action_icon?: boolean;
+        show_mode_control?: boolean;
+        show_temp_control?: boolean;
+        show_temp_indicators?: boolean;
+        temperature_gap?: number;
+    };
 
 export const thermostatCardConfigStruct = assign(
-    baseLovelaceCardConfig,
+    lovelaceCardConfigStruct,
+    assign(entitySharedConfigStruct, layoutSharedConfigStruct, actionsSharedConfigStruct),
     object({
-        entity: optional(string()),
-        icon: optional(string()),
-        name: optional(string()),
-        layout: optional(layoutStruct),
-        fill_container: optional(boolean()),
-        hide_state: optional(boolean()),
         enable_when_off: optional(boolean()),
         use_action_color: optional(boolean()),
         use_action_icon: optional(boolean()),
@@ -39,8 +29,5 @@ export const thermostatCardConfigStruct = assign(
         show_temp_control: optional(boolean()),
         show_temp_indicators: optional(boolean()),
         temperature_gap: optional(number()),
-        tap_action: optional(actionConfigStruct),
-        hold_action: optional(actionConfigStruct),
-        double_tap_action: optional(actionConfigStruct),
     })
 );

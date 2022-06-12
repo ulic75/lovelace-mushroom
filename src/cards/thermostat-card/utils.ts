@@ -17,8 +17,6 @@ export const getStepSize = (hass: HomeAssistant, entity: ClimateEntity): number 
     return entity.attributes.target_temp_step ?? systemStep;
 };
 
-export const supportTargetTemperatureRange = (entity: ClimateEntity) => supportsFeature(entity, 2);
-
 export const supportsCoolOnly = (entity: ClimateEntity) => {
     const modes = entity.attributes.hvac_modes;
     return !modes.includes("heat") && modes.includes("cool");
@@ -32,7 +30,7 @@ export const supportsHeatOnly = (entity: ClimateEntity) => {
 export const getTargetTemps = (entity: ClimateEntity): [number | undefined, number | undefined] => {
     const { target_temp_high, target_temp_low, temperature } = entity.attributes;
 
-    if (supportTargetTemperatureRange(entity)) return [target_temp_low, target_temp_high];
-    if (supportsHeatOnly(entity)) return [target_temp_low ?? temperature, undefined];
-    return [undefined, target_temp_high ?? temperature];
+    if (supportsHeatOnly(entity) || entity.state == "heat") return [target_temp_low ?? temperature, undefined];
+    if (supportsCoolOnly(entity) || entity.state == "cool") [undefined, target_temp_high ?? temperature];
+    return [target_temp_low, target_temp_high];
 };

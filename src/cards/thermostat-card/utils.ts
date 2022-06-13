@@ -1,5 +1,4 @@
 import { formatNumber, HomeAssistant, UNIT_F } from "../../ha";
-import { supportsFeature } from "../../ha/common/entity/supports-feature";
 import { ClimateEntity } from "../../ha/data/climate";
 import { isNumber } from "../../utils/number";
 

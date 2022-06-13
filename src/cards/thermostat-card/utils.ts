@@ -1,5 +1,4 @@
 import { formatNumber, HomeAssistant, UNIT_F } from "../../ha";
-import { supportsFeature } from "../../ha/common/entity/supports-feature";
 import { ClimateEntity } from "../../ha/data/climate";
 import { isNumber } from "../../utils/number";
 
@@ -30,7 +29,9 @@ export const supportsHeatOnly = (entity: ClimateEntity) => {
 export const getTargetTemps = (entity: ClimateEntity): [number | undefined, number | undefined] => {
     const { target_temp_high, target_temp_low, temperature } = entity.attributes;
 
-    if (supportsHeatOnly(entity) || entity.state === "heat") return [target_temp_low ?? temperature, undefined];
-    if (supportsCoolOnly(entity) || entity.state === "cool") [undefined, target_temp_high ?? temperature];
+    if (supportsHeatOnly(entity) || entity.state === "heat")
+        return [target_temp_low ?? temperature, undefined];
+    if (supportsCoolOnly(entity) || entity.state === "cool")
+        return [undefined, target_temp_high ?? temperature];
     return [target_temp_low, target_temp_high];
 };

@@ -9,6 +9,7 @@ export type ThermostatCardConfig = LovelaceCardConfig &
     EntitySharedConfig &
     LayoutSharedConfig &
     ActionsSharedConfig & {
+        hide_state?: boolean;
         enable_when_off?: boolean;
         use_action_color?: boolean;
         use_action_icon?: boolean;
@@ -22,6 +23,7 @@ export const thermostatCardConfigStruct = assign(
     lovelaceCardConfigStruct,
     assign(entitySharedConfigStruct, layoutSharedConfigStruct, actionsSharedConfigStruct),
     object({
+        hide_state: optional(boolean()),
         enable_when_off: optional(boolean()),
         use_action_color: optional(boolean()),
         use_action_icon: optional(boolean()),

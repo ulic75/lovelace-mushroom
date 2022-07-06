@@ -35,9 +35,6 @@
         },
         "card": {
             "generic": {
-                "hide_name": "隱藏名稱?",
-                "hide_state": "隱藏狀態?",
-                "hide_icon": "隱藏圖示?",
                 "icon_color": "圖示顏色",
                 "layout": "佈局",
                 "fill_container": "填滿容器",
@@ -71,7 +68,9 @@
                 "secondary": "次要訊息",
                 "multiline_secondary": "多行次要訊息?",
                 "entity_extra": "用於模板與動作",
-                "content": "內容"
+                "content": "內容",
+                "badge_icon": "角標圖示",
+                "badge_color": "角標顏色"
             },
             "title": {
                 "title": "標題",

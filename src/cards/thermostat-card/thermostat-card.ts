@@ -2,27 +2,7 @@ import { css, CSSResultGroup, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
-// import "../../shared/card";
-// import "../../shared/state-item";
-// import "../../shared/state-value";
-import { cardStyle } from "../../utils/card-styles";
-import { registerCustomCard } from "../../utils/custom-cards";
-import { stateIcon } from "../../utils/icons/state-icon";
-import { getLayoutFromConfig } from "../../utils/layout";
-import "./controls/thermostat-mode-control";
-import "./controls/thermostat-temperature-control";
-import { ThermostatCardConfig } from "./thermostat-card-config";
-import {
-    THERMOSTAT_CARD_EDITOR_NAME,
-    THERMOSTAT_CARD_NAME,
-    THERMOSTAT_ENTITY_DOMAINS,
-} from "./const";
-import { formatDegrees, getStepSize } from "./utils";
-import { climateIconAction } from "../../utils/icons/climate-icon";
 import { isActive } from "../../ha/data/entity";
-import { ClimateEntity, CLIMATE_PRESET_NONE } from "../../ha/data/climate";
-import { MushroomBaseElement } from "../../utils/base-element";
-import { coerceBoolean } from "../../utils/boolean";
 import {
     actionHandler,
     ActionHandlerEvent,
@@ -34,6 +14,24 @@ import {
     LovelaceCardEditor,
     UNIT_F,
 } from "../../ha";
+import { ClimateEntity, CLIMATE_PRESET_NONE } from "../../ha/data/climate";
+import { computeAppearance } from "../../utils/appearance";
+import { MushroomBaseCard } from "../../utils/base-card-ss";
+import { coerceBoolean } from "../../utils/boolean";
+import { cardStyle } from "../../utils/card-styles";
+import { registerCustomCard } from "../../utils/custom-cards";
+import { climateIconAction } from "../../utils/icons/climate-icon";
+import { stateIcon } from "../../utils/icons/state-icon";
+import { computeEntityPicture } from "../../utils/info";
+import { ThermostatCardConfig } from "./thermostat-card-config";
+import {
+    THERMOSTAT_CARD_EDITOR_NAME,
+    THERMOSTAT_CARD_NAME,
+    THERMOSTAT_ENTITY_DOMAINS,
+} from "./const";
+import { formatDegrees, getStepSize } from "./utils";
+import "./controls/thermostat-mode-control";
+import "./controls/thermostat-temperature-control";
 
 type ThermostatCardControl = "temperature_control" | "mode_control";
 
@@ -49,7 +47,7 @@ registerCustomCard({
 });
 
 @customElement(THERMOSTAT_CARD_NAME)
-export class ThermostatCard extends MushroomBaseElement implements LovelaceCard {
+export class ThermostatCard extends MushroomBaseCard implements LovelaceCard {
     public static async getConfigElement(): Promise<LovelaceCardEditor> {
         await import("./thermostat-card-editor");
         return document.createElement(THERMOSTAT_CARD_EDITOR_NAME) as LovelaceCardEditor;
@@ -141,8 +139,8 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
 
         const name = this._config.name || entity.attributes.friendly_name || "";
 
-        const layout = getLayoutFromConfig(this._config);
-        const hideState = !!this._config.hide_state;
+        const appearance = computeAppearance(this._config);
+        const picture = computeEntityPicture(entity, appearance.icon_type);
 
         let icon = this._config.icon || "mdi:thermostat";
         if (coerceBoolean(this._config.use_action_icon)) {
@@ -176,51 +174,23 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
         }
         `;
 
-        const iconStyle = {};
-        if (this._config?.use_action_color) {
-            if (hvac_action && !["idle", "off"].includes(hvac_action)) {
-                iconStyle["--icon-color"] = `rgb(var(--rgb-action-climate-${hvac_action}))`;
-                iconStyle["--shape-color"] = `rgba(var(--rgb-action-climate-${hvac_action}), 0.25)`;
-            } else if (!hvac_action && entity.state !== "off") {
-                iconStyle["--icon-color"] = `rgb(var(--rgb-state-climate-${entity.state}))`;
-                iconStyle["--shape-color"] = `rgba(var(--rgb-state-climate-${entity.state}), 0.25)`;
-            }
-        }
-
         const rtl = computeRTL(this.hass);
 
         return html`
-            <ha-card class=${classMap({ "fill-container": this._config.fill_container ?? false })}>
-                <mushroom-card .layout=${layout} ?rtl=${rtl}>
+            <ha-card class=${classMap({ "fill-container": appearance.fill_container })}>
+                <mushroom-card .appearance="${appearance}" ?rtl=${rtl}>
                     <mushroom-state-item
                         ?rtl=${rtl}
-                        .layout=${layout}
+                        .appearance=${appearance}
                         @action=${this._handleAction}
                         .actionHandler=${actionHandler({
                             hasHold: hasAction(this._config.hold_action),
                             hasDoubleClick: hasAction(this._config.double_tap_action),
                         })}
                     >
-                        <mushroom-shape-icon
-                            slot="icon"
-                            .disabled=${!isActive(entity)}
-                            .icon=${icon}
-                            style=${styleMap(iconStyle)}
-                        ></mushroom-shape-icon>
-                        ${entity.state === "unavailable"
-                            ? html`
-                                  <mushroom-badge-icon
-                                      class="unavailable"
-                                      slot="badge"
-                                      icon="mdi:help"
-                                  ></mushroom-badge-icon>
-                              `
-                            : null}
-                        <mushroom-state-info
-                            slot="info"
-                            .primary=${name}
-                            .secondary=${!hideState && state}
-                        ></mushroom-state-info>
+                        ${picture ? this.renderPicture(picture) : this.renderIcon(entity, icon)}
+                        ${this.renderBadge(entity)}
+                        ${this.renderStateInfo(entity, appearance, name, state)};
                     </mushroom-state-item>
                     ${this._controls.length > 0
                         ? html`
@@ -231,6 +201,29 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
                         : null}
                 </mushroom-card>
             </ha-card>
+        `;
+    }
+
+    protected renderIcon(entity: ClimateEntity, icon: string): TemplateResult {
+        const { hvac_action } = entity.attributes;
+        const active = isActive(entity);
+        const iconStyle = {};
+        if (this._config?.use_action_color) {
+            if (hvac_action && !["idle", "off"].includes(hvac_action)) {
+                iconStyle["--icon-color"] = `rgb(var(--rgb-action-climate-${hvac_action}))`;
+                iconStyle["--shape-color"] = `rgba(var(--rgb-action-climate-${hvac_action}), 0.25)`;
+            } else if (!hvac_action && entity.state !== "off") {
+                iconStyle["--icon-color"] = `rgb(var(--rgb-state-climate-${entity.state}))`;
+                iconStyle["--shape-color"] = `rgba(var(--rgb-state-climate-${entity.state}), 0.25)`;
+            }
+        }
+        return html`
+            <mushroom-shape-icon
+                slot="icon"
+                .disabled=${!active}
+                .icon=${icon}
+                style=${styleMap(iconStyle)}
+            ></mushroom-shape-icon>
         `;
     }
 
@@ -250,7 +243,7 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
     }
 
     private renderActiveControl(entity: ClimateEntity): TemplateResult | null {
-        const layout = getLayoutFromConfig(this._config!);
+        const appearance = computeAppearance(this._config!);
         const rtl = computeRTL(this.hass);
 
         switch (this._activeControl) {
@@ -258,7 +251,7 @@ export class ThermostatCard extends MushroomBaseElement implements LovelaceCard 
                 return html` <ss-thermostat-mode-control
                     .hass=${this.hass}
                     .entity=${entity}
-                    .fill=${layout !== "horizontal"}
+                    .fill=${appearance.layout !== "horizontal"}
                 ></ss-thermostat-mode-control>`;
             case "temperature_control":
                 return html`<ss-thermostat-temperature-control

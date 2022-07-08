@@ -1,12 +1,12 @@
 import { css, CSSResultGroup, LitElement, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { HomeAssistant } from "../ha";
-import "../shared/badge-icon";
-import "../shared/card";
-import "../shared/shape-avatar";
-import "../shared/shape-icon";
-import "../shared/state-info";
-import "../shared/state-item";
+// import "../shared/badge-icon";
+// import "../shared/card";
+// import "../shared/shape-avatar";
+// import "../shared/shape-icon";
+// import "../shared/state-info";
+// import "../shared/state-item";
 import { defaultColorCss, defaultDarkColorCss } from "./colors";
 import { themeVariables, themeColorCss } from "./theme";
 

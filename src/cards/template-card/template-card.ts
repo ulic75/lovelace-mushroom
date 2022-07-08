@@ -18,11 +18,11 @@ import {
 import "../../shared/shape-icon";
 import "../../shared/state-info";
 import "../../shared/state-item";
+import { computeAppearance } from "../../utils/appearance";
 import { MushroomBaseElement } from "../../utils/base-element";
 import { cardStyle } from "../../utils/card-styles";
 import { computeRgbColor } from "../../utils/colors";
 import { registerCustomCard } from "../../utils/custom-cards";
-import { getLayoutFromConfig } from "../../utils/layout";
 import { TEMPLATE_CARD_EDITOR_NAME, TEMPLATE_CARD_NAME } from "./const";
 import { TemplateCardConfig } from "./template-card-config";
 
@@ -32,7 +32,15 @@ registerCustomCard({
     description: "Card for custom rendering with templates",
 });
 
-const TEMPLATE_KEYS = ["icon", "icon_color", "primary", "secondary"] as const;
+const TEMPLATE_KEYS = [
+    "icon",
+    "icon_color",
+    "badge_color",
+    "badge_icon",
+    "primary",
+    "secondary",
+    "picture",
+] as const;
 type TemplateKey = typeof TEMPLATE_KEYS[number];
 
 @customElement(TEMPLATE_CARD_NAME)
@@ -109,38 +117,44 @@ export class TemplateCard extends MushroomBaseElement implements LovelaceCard {
 
         const icon = this.getValue("icon");
         const iconColor = this.getValue("icon_color");
+        const badgeIcon = this.getValue("badge_icon");
+        const badgeColor = this.getValue("badge_color");
         const primary = this.getValue("primary");
         const secondary = this.getValue("secondary");
+        const picture = this.getValue("picture") ?? "";
 
-        const hideIcon = !icon;
-
-        const layout = getLayoutFromConfig(this._config);
         const multiline_secondary = this._config.multiline_secondary;
-
-        const iconStyle = {};
-        if (iconColor) {
-            const iconRgbColor = computeRgbColor(iconColor);
-            iconStyle["--icon-color"] = `rgb(${iconRgbColor})`;
-            iconStyle["--shape-color"] = `rgba(${iconRgbColor}, 0.2)`;
-        }
 
         const rtl = computeRTL(this.hass);
 
+        const appearance = computeAppearance({
+            fill_container: this._config.fill_container,
+            layout: this._config.layout,
+            icon_type: Boolean(picture) ? "entity-picture" : Boolean(icon) ? "icon" : "none",
+            primary_info: Boolean(primary) ? "name" : "none",
+            secondary_info: Boolean(secondary) ? "state" : "none",
+        });
+
         return html`
-            <ha-card class=${classMap({ "fill-container": this._config.fill_container ?? false })}>
-                <mushroom-card .layout=${layout} ?rtl=${rtl}>
+            <ha-card class=${classMap({ "fill-container": appearance.fill_container })}>
+                <mushroom-card .appearance=${appearance} ?rtl=${rtl}>
                     <mushroom-state-item
                         ?rtl=${rtl}
-                        .layout=${layout}
+                        .appearance=${appearance}
                         @action=${this._handleAction}
                         .actionHandler=${actionHandler({
                             hasHold: hasAction(this._config.hold_action),
                             hasDoubleClick: hasAction(this._config.double_tap_action),
                         })}
-                        .hide_info=${!primary && !secondary}
-                        .hide_icon=${hideIcon}
                     >
-                        ${!hideIcon ? this.renderIcon(icon, iconColor) : undefined}
+                        ${picture
+                            ? this.renderPicture(picture)
+                            : icon
+                            ? this.renderIcon(icon, iconColor)
+                            : null}
+                        ${(icon || picture) && badgeIcon
+                            ? this.renderBadgeIcon(badgeIcon, badgeColor)
+                            : undefined}
                         <mushroom-state-info
                             slot="info"
                             .primary=${primary}
@@ -150,6 +164,15 @@ export class TemplateCard extends MushroomBaseElement implements LovelaceCard {
                     </mushroom-state-item>
                 </mushroom-card>
             </ha-card>
+        `;
+    }
+
+    renderPicture(picture: string): TemplateResult {
+        return html`
+            <mushroom-shape-avatar
+                slot="icon"
+                .picture_url=${(this.hass as any).hassUrl(picture)}
+            ></mushroom-shape-avatar>
         `;
     }
 
@@ -166,6 +189,21 @@ export class TemplateCard extends MushroomBaseElement implements LovelaceCard {
                 slot="icon"
                 .icon=${icon}
             ></mushroom-shape-icon>
+        `;
+    }
+
+    renderBadgeIcon(badge: string, badgeColor?: string) {
+        const badgeStyle = {};
+        if (badgeColor) {
+            const iconRgbColor = computeRgbColor(badgeColor);
+            badgeStyle["--main-color"] = `rgba(${iconRgbColor})`;
+        }
+        return html`
+            <mushroom-badge-icon
+                slot="badge"
+                .icon=${badge}
+                style=${styleMap(badgeStyle)}
+            ></mushroom-badge-icon>
         `;
     }
 

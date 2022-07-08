@@ -1,6 +1,3 @@
-// Borrowed from:
-// https://github.com/custom-cards/boilerplate-card/blob/master/src/localize/localize.ts
-
 import { HomeAssistant } from "./ha";
 import * as en from "./translations/en-thermostat.json";
 

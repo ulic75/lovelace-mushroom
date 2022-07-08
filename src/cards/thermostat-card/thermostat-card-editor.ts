@@ -4,7 +4,9 @@ import memoizeOne from "memoize-one";
 import { assert } from "superstruct";
 import { fireEvent, LovelaceCardEditor, UNIT_F } from "../../ha";
 import setupCustomlocalize from "../../localize";
-import { MushroomBaseElement } from "../../utils/base-element";
+import { computeActionsFormSchema } from "../../shared/config/actions-config";
+import { APPEARANCE_FORM_SCHEMA } from "../../shared/config/appearance-config";
+import { MushroomBaseElement } from "../../utils/base-element-ss";
 import { GENERIC_LABELS } from "../../utils/form/generic-fields";
 import { HaFormSchema } from "../../utils/form/ha-form";
 import { stateIcon } from "../../utils/icons/state-icon";
@@ -25,21 +27,8 @@ export const THERMOSTAT_FIELDS = [
 const computeSchema = memoizeOne((icon?: string, unit?: string): HaFormSchema[] => [
     { name: "entity", selector: { entity: { domain: THERMOSTAT_ENTITY_DOMAINS } } },
     { name: "name", selector: { text: {} } },
-    {
-        type: "grid",
-        name: "",
-        schema: [{ name: "icon", selector: { icon: { placeholder: icon } } }],
-    },
-    {
-        type: "grid",
-        name: "",
-        schema: [
-            { name: "layout", selector: { "mush-layout": {} } },
-            { name: "fill_container", selector: { boolean: {} } },
-            { name: "hide_state", selector: { boolean: {} } },
-            { name: "enable_when_off", selector: { boolean: {} } },
-        ],
-    },
+    { name: "icon", selector: { icon: { placeholder: icon } } },
+    ...APPEARANCE_FORM_SCHEMA,
     {
         type: "grid",
         name: "",
@@ -49,6 +38,7 @@ const computeSchema = memoizeOne((icon?: string, unit?: string): HaFormSchema[] 
             { name: "show_temp_control", selector: { boolean: {} } },
             { name: "show_temp_indicators", selector: { boolean: {} } },
             { name: "show_mode_control", selector: { boolean: {} } },
+            { name: "enable_when_off", selector: { boolean: {} } },
         ],
     },
     {
@@ -63,9 +53,7 @@ const computeSchema = memoizeOne((icon?: string, unit?: string): HaFormSchema[] 
             },
         },
     },
-    { name: "tap_action", selector: { "mush-action": {} } },
-    { name: "hold_action", selector: { "mush-action": {} } },
-    { name: "double_tap_action", selector: { "mush-action": {} } },
+    ...computeActionsFormSchema(),
 ]);
 
 @customElement(THERMOSTAT_CARD_EDITOR_NAME)

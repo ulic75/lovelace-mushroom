@@ -4,8 +4,6 @@ import { styleMap } from "lit/directives/style-map.js";
 import { computeRTL, HomeAssistant } from "../../../ha";
 import { ClimateEntity, compareClimateHvacModes } from "../../../ha/data/climate";
 import { climateIcon } from "../../../utils/icons/climate-icon";
-// import "../../../shared/button";
-// import "../../../shared/button-group";
 
 @customElement("ss-thermostat-mode-control")
 export class ThermostatModeControl extends LitElement {
